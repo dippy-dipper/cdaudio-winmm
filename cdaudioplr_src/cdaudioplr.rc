@@ -1,0 +1,21 @@
+id ICON "icon.ico"
+
+1 VERSIONINFO
+FILEVERSION 0,2,0,0
+PRODUCTVERSION 0,2,0,0
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904B0"
+        {
+            VALUE "ProductName", "WINMM cdaudio player"
+            VALUE "OriginalFileName", "cdaudioplr.exe"
+            VALUE "FileDescription", "cdaudio playback"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation",  0x0409, 0x04B0
+    }
+}
