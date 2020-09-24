@@ -1,16 +1,16 @@
 id ICON "icon.ico"
 
 1 VERSIONINFO
-FILEVERSION 0,2,0,0
-PRODUCTVERSION 0,2,0,0
+FILEVERSION 0,3,0,0
+PRODUCTVERSION 0,3,0,0
 {
     BLOCK "StringFileInfo"
     {
         BLOCK "040904B0"
         {
-            VALUE "ProductName", "WINMM cdaudio player"
+            VALUE "ProductName", "cdaudio-winmm player"
             VALUE "OriginalFileName", "cdaudioplr.exe"
-            VALUE "FileDescription", "cdaudio playback"
+            VALUE "FileDescription", "cdaudio-winmm player"
         }
     }
 
