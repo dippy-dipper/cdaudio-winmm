@@ -76,6 +76,7 @@ FILE * fp;
 HANDLE reader = NULL;
 HANDLE player = NULL;
 HWND hEdit;
+HWND g_hMainWindow = NULL;
 
 /* Mailslot reader thread: */
 int reader_main( void )
@@ -191,7 +192,7 @@ int player_main( void )
  /* mp3/wav player code: */
 /* -------------------- */
 
-	HWND hwnd;
+	/* HWND hwnd; */
 	DIR *dir;
 	struct dirent *list;
 	char tempname[256] = "";
@@ -303,7 +304,7 @@ int player_main( void )
 				dprintf("%s\n", play_cmd);
 				
 				/* Issue play command: */
-				mciSendStringA("play mp3track notify", NULL, 0, hwnd);
+				mciSendStringA("play mp3track notify", NULL, 0, g_hMainWindow);
 				mp3done = 0;
 				dprintf("playing track: %d\n", play_from);
     	
@@ -792,6 +793,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			MB_ICONEXCLAMATION | MB_OK);
 		return 0;
 	}
+
+	g_hMainWindow = hwnd;
 
 	ShowWindow(hwnd, SW_SHOWNOACTIVATE); /* Start with inactive window. */
 	UpdateWindow(hwnd);
