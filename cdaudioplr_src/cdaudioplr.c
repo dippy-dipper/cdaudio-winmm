@@ -10,6 +10,9 @@ finished (missing MCI_NOTIFY_SUCCESSFUL msg).
 #include <stdio.h>
 #include <direct.h>
 #include <sys/stat.h>
+#include <dirent.h>
+#include <ctype.h>
+
 #pragma comment(lib, "winmm.lib")
 #define GetCurrentDir _getcwd
 
@@ -62,11 +65,12 @@ char ini_dir[256] = "";
 int play_from = 0;
 int play_from2;
 int play_to;
-int tracks;
+int tracks = 0;
 int play = 0;
 int paused_track = 100;
 int notify_msg = 0;
 int quit = 0;
+int mp3done = 0;
 
 FILE * fp;
 HANDLE reader = NULL;
@@ -183,6 +187,179 @@ int player_main( void )
 	if (cdaudio_vol <= 90 && cdaudio_vol > 80) waveOutSetVolume(NULL, 0xE290E290); /* 58000 */
 	if (cdaudio_vol >= 100 && cdaudio_vol > 90) waveOutSetVolume(NULL, 0xFFFFFFFF); /* 65000 */
 
+  /* -------------------- */
+ /* mp3/wav player code: */
+/* -------------------- */
+
+	HWND hwnd;
+	DIR *dir;
+	struct dirent *list;
+	char tempname[256] = "";
+	int mp3playback = 0;
+	int lookforwav = 0;
+
+	/* Try to open music dir */
+	if ((dir = opendir (".\\music\\")) == NULL){
+		dprintf ("Music dir not found.\n");
+		}
+		else{
+		/* Look for .mp3 */
+		while ((list = readdir (dir)) != NULL){
+			/* Get file name sring */
+			sprintf (tempname, "%s", list->d_name);
+			/* Make it lower case */
+			for(int i = 0; tempname[i]; i++){
+			tempname[i] = tolower(tempname[i]);
+			}
+			/* Look for "track" and ".mp3" in the file name */
+			if ((strstr(tempname, "track")) && (strstr(tempname, ".mp3"))){
+			tracks++;
+			}
+		}
+		closedir (dir);
+		if(!tracks){
+			dprintf ("No mp3 tracks found!\n");
+			lookforwav = 1;
+		}
+		else{
+		dprintf ("Found %d mp3 tracks.\n", tracks);
+		SetWindowText(hEdit, TEXT("Using .mp3 files for music playback."));
+		tracks++; /* Add data track */
+		mp3playback = 1;
+
+		/* convert to string */
+		sprintf(tracks_s, "%d", tracks);
+		/* Write no. of tracks for winmm wrapper: */
+		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
+		CloseHandle(Mailslot);
+		}
+
+		/* Look for .wav instead */
+		if(lookforwav == 1){
+			dir = opendir (".\\music\\");
+			while ((list = readdir (dir)) != NULL){
+				/* Get file name sring */
+				sprintf (tempname, "%s", list->d_name);
+				/* Make it lower case */
+				for(int i = 0; tempname[i]; i++){
+				tempname[i] = tolower(tempname[i]);
+				}
+				/* Look for "track" and ".wav" in the file name */
+				if ((strstr(tempname, "track")) && (strstr(tempname, ".wav"))){
+				tracks++;
+				}
+			}
+			closedir (dir);
+			if(!tracks){
+				dprintf ("No wav tracks found!\n");
+			}
+			else{
+			dprintf ("Found %d wav tracks.\n", tracks);
+			SetWindowText(hEdit, TEXT("Using .wav files for music playback."));
+			tracks++; /* Add data track */
+			mp3playback = 1;
+        	
+			/* convert to string */
+			sprintf(tracks_s, "%d", tracks);
+			/* Write no. of tracks for winmm wrapper: */
+			HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+			WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
+			CloseHandle(Mailslot);
+			}
+		}
+	}
+
+	/* mp3(and wav) player loop: */
+	while(mp3playback == 1){
+
+		if(play_from > 0 && play_from < 100)
+		{
+			play = 1;
+			play_from2 = play_from; /* For comparison. */
+		}
+    	
+		while(play == 1)
+		{
+			/* Handle MCI_PAUSE: */
+			if(play_from == paused_track)
+			{
+				mciSendStringA("resume mp3track", NULL, 0, NULL);
+				paused_track = 100;
+				dprintf("RESUME:\n");
+				SetWindowText(hEdit, TEXT("Command: MCI_RESUME"));
+			}
+			else
+			{
+				/* Open .mp3 file */
+				if(lookforwav == 1){
+				sprintf(play_cmd, "open \".\\music\\track%02d.wav\" type mpegvideo alias mp3track", play_from);
+				}
+				/* Open .wav file */
+				else{
+				sprintf(play_cmd, "open \".\\music\\track%02d.mp3\" type mpegvideo alias mp3track", play_from);
+				}
+				mciSendStringA(play_cmd, NULL, 0, NULL);
+				dprintf("%s\n", play_cmd);
+				
+				/* Issue play command: */
+				mciSendStringA("play mp3track notify", NULL, 0, hwnd);
+				mp3done = 0;
+				dprintf("playing track: %d\n", play_from);
+    	
+				/* Write mode playing for winmm wrapper: */
+				HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				WriteFile(Mailslot, "2 mode", 64, &BytesWritten, NULL);
+				CloseHandle(Mailslot);
+			}
+
+		while (mp3done == 0){
+			Sleep (100);
+			/* Check if track has changed: */
+			if(play_from != play_from2){
+				notify_msg = 0; /* If playback is interrupted do not send notify success msg. */
+				break;
+			}
+		}
+		/* Write MODE stopped for winmm wrapper: */
+		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		WriteFile(Mailslot, "1 mode", 64, &BytesWritten, NULL);
+		CloseHandle(Mailslot);
+
+		/* Handle MCI_PAUSE: */
+		if (play_from == 100)
+		{
+			mciSendStringA("pause mp3track", NULL, 0, NULL);
+			dprintf("  PAUSE:\n");
+			paused_track = play_from2;
+		}
+		else
+		{
+		mciSendStringA("stop mp3track", NULL, 0, NULL);
+		mciSendStringA("close mp3track", NULL, 0, NULL);
+		}
+
+		/* Write notify success message: */
+		if (notify_msg == 1){
+			HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+			WriteFile(Mailslot, "1 notify_s", 64, &BytesWritten, NULL);
+			CloseHandle(Mailslot);
+
+			notify_msg = 0;
+			dprintf("Notify SUCCESS!\n");
+		}
+
+		play = 0;
+		
+	}
+
+	Sleep(100);
+	}
+
+  /* --------------------------- */
+ /* End of mp3/wav player code. */
+/* --------------------------- */
+
 	mciSendStringA("status cdaudio media present", media, 64, NULL);
 	/* Loop to check if CD is inserted: */
 	while(strcmp(media,"true")!=0)
@@ -213,7 +390,7 @@ int player_main( void )
 	mciSendStringA("open cdaudio", NULL, 0, NULL);
 	mciSendStringA("set cdaudio time format tmsf", NULL, 0, NULL);
 
-	/* player loop: */
+	/* cdaudio player loop: */
 	while(1){
 
 	if(play_from > 0 && play_from < 100)
@@ -359,6 +536,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
 	{
+		case MM_MCINOTIFY:
+		{
+			/* if (msg==MM_MCINOTIFY && wParam==MCI_NOTIFY_SUCCESSFUL) */
+			mp3done = 1;
+		}
+		break;
 		case WM_CREATE:
 		{
 			HFONT hfDefault;
@@ -508,7 +691,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					HINSTANCE hInstance = GetModuleHandle(NULL);
 
 					GetModuleFileName(hInstance, szFileName, MAX_PATH);
-					MessageBox(hwnd, szFileName, "WINMM cdaudio player is running from:", MB_OK | MB_ICONINFORMATION);
+					MessageBox(hwnd, szFileName, "cdaudio-winmm player is running from:", MB_OK | MB_ICONINFORMATION);
 				}
 				break;
 				case ID_HELP_INST:
@@ -517,10 +700,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					"    in 'mcicda' -subfolder.\n3. Run the game normally.\n\n"
 					"Additional tips:\n\n-You can also start cdaudioplr.exe\n"
 					"manually before running the game.\n\n-Do not place cdaudioplr.exe and\n"
-					"winmm.dll in the same folder.\n"), TEXT("Instructions"), MB_OK);
+					"winmm.dll in the same folder.\n\n- mp3 or wav tracks can be placed\n"
+					"in 'music' folder (track02 ...)"), TEXT("Instructions"), MB_OK);
 				break;
 				case ID_HELP_ABOUT:
-					MessageBox(hwnd, TEXT("winmm cdaudio player\nversion 0.2 Beta (c) 2020\n\nRestores track repeat\nand volume control\nin Vista and later."), TEXT("About"), MB_OK);
+					MessageBox(hwnd, TEXT("cdaudio-winmm player\nversion 0.3 Beta (c) 2020\n\nRestores track repeat\nand volume control\nin Vista and later."), TEXT("About"), MB_OK);
 				break;
 			}
 		break;
@@ -597,7 +781,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	hwnd = CreateWindowEx(
 		WS_EX_CLIENTEDGE,
 		g_szClassName,
-		"WINMM cdaudio player",
+		"cdaudio-winmm player",
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, 340, 220,
 		NULL, NULL, hInstance, NULL);
