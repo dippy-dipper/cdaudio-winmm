@@ -1,4 +1,8 @@
-# winmm-cdaudio player (beta v.0.2):
+# cdaudio-winmm player (beta v.0.3):
+
+0.3 changes:
+- mp3/wav support
+- cleared up some naming inconsistency
 
 This is a very preliminary version of a winmm wrapper to separate cdaudio player that handles the track repeat and volume control that is broken on Windows Vista and onwards.
 
@@ -35,3 +39,4 @@ Or build from msys with command: mingw32-make
 NOTE:
 - You can start cdaudioplr.exe manually before running the game. Sometimes this may be necessary since the game may query the cd device before the wrapper has time to initialize the player.
 - Do not place cdaudioplr.exe and winmm.dll in the same folder!
+- v.0.3 now supports mp3 and wav playback if a music folder is found containing the tracks in the correct format. (track02.mp3/wav ...)
