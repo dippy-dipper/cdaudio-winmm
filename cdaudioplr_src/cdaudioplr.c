@@ -1,9 +1,16 @@
 /*
-cdaudio player using MCI Strings with the
-objective of fixing regression issue in cdaudio
-playback starting with Windows Vista. Mainly the
-lack of a working mode update after playing has
-finished (missing MCI_NOTIFY_SUCCESSFUL msg).
+	THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF 
+	ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+	THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A 
+	PARTICULAR PURPOSE.
+
+	(c) 2020 DD
+
+	cdaudio player using MCI Strings with the
+	objective of fixing regression issue in cdaudio
+	playback starting with Windows Vista. Mainly the
+	lack of a working mode update after playing has
+	finished (missing MCI_NOTIFY_SUCCESSFUL msg).
 */
 
 #include <windows.h>
