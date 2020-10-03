@@ -16,6 +16,7 @@
   
   This code has been modified to work with the stand-alone cdaudioplr.exe
   to fix issues with cdaudio playback in old games starting with Win Vista.
+  Edits by: DD (2020)
   ________________________________________________________________________
 */
 
