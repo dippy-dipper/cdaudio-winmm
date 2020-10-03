@@ -1,5 +1,7 @@
 # cdaudio-winmm player (beta v.0.3):
 
+![screenshot](screenshot.png)
+
 0.3 changes:
 - mp3/wav support
 - cleared up some naming inconsistency
