@@ -25,7 +25,7 @@ HINSTANCE loadRealDLL()
     char winmm_path[MAX_PATH];
 
     GetSystemDirectory(winmm_path, MAX_PATH);
-    strncat(winmm_path, "//winmm.DLL", MAX_PATH);
+    strncat(winmm_path, "\\winmm.dll", 11);
 
     realWinmmDLL = LoadLibrary(winmm_path);
     
