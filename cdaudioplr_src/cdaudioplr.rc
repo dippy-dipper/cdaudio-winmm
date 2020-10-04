@@ -11,6 +11,7 @@ PRODUCTVERSION 0,3,0,0
             VALUE "ProductName", "cdaudio-winmm player"
             VALUE "OriginalFileName", "cdaudioplr.exe"
             VALUE "FileDescription", "cdaudio-winmm player"
+            VALUE "LegalCopyright", "Copyright (c) 2020 DD"
         }
     }
 
