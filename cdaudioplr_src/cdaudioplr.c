@@ -147,6 +147,7 @@ int reader_main( void )
 				}
 		}
 	}
+	return 0;
 }
 
 /* Player thread: */
@@ -361,7 +362,7 @@ int player_main( void )
 		
 	}
 
-	Sleep(100);
+	Sleep(300);
 	}
 
   /* --------------------------- */
@@ -533,7 +534,7 @@ int player_main( void )
 		play = 0;
 	}
 
-	Sleep(100);
+	Sleep(300);
 	}
 
 	return 0;
