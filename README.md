@@ -8,7 +8,7 @@
 
 This is a very preliminary version of a winmm wrapper to separate cdaudio player that handles the track repeat and volume control that is broken on Windows Vista and onwards.
 
-Unlike the ogg-winmm wrapper which plays ripped .ogg files it instead tries to play the cdtracks on a physical disc (or cd image?) using a separate player program.
+Unlike the ogg-winmm wrapper which plays ripped .ogg files it instead tries to play the cdtracks on a physical disc (or cd image?) using a separate player program. Communication between winmm.dll and the player is done using [mailslots.](https://docs.microsoft.com/en-us/windows/win32/ipc/mailslots)
 
 The trick is to handle the broken MCI mode change by monitoring POSTION and MODE. 
 If MODE = "playing" and POSITION has not changed then we can determine that the track has finished playing and can send the MM_NOTIFY_SUCCESSFUL message. The cdaudio player code might be useful for anyone wanting to write a MCI cdaudio player on newer Windows systems.
