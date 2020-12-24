@@ -635,7 +635,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			hSubMenu = CreatePopupMenu();
 			AppendMenu(hSubMenu, MF_STRING, ID_FILE_EXIT, "E&xit");
-			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
+			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT64)hSubMenu, "&File");
 
 			hSubMenu = CreatePopupMenu();
 			AppendMenu(hSubMenu, MF_STRING, ID_VOLUME_0, "&Mute");
@@ -650,16 +650,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			AppendMenu(hSubMenu, MF_STRING, ID_VOLUME_90, "&90%");
 			AppendMenu(hSubMenu, MF_STRING, ID_VOLUME_100, "&Disable override");
 
-			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Volume override");
+			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT64)hSubMenu, "&Volume override");
 
 			hSubMenu = CreatePopupMenu();
 			AppendMenu(hSubMenu, MF_STRING, ID_VIEW_WDIR, "&Running from...");
-			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&View");
+			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT64)hSubMenu, "&View");
 
 			hSubMenu = CreatePopupMenu();
 			AppendMenu(hSubMenu, MF_STRING, ID_HELP_INST, "&Instructions");
 			AppendMenu(hSubMenu, MF_STRING, ID_HELP_ABOUT, "&About");
-			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Help");
+			AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT64)hSubMenu, "&Help");
 
 			SetMenu(hwnd, hMenu);
 		}
