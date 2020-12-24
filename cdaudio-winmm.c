@@ -290,7 +290,7 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 				else if (time_format == MCI_FORMAT_MILLISECONDS)
 				{
 					int track_ms;
-					track_ms = parms->dwFrom / 120000;
+					track_ms = parms->dwFrom / 60000;
 					
 					HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 					snprintf(dwFrom_str, 32, "%d", track_ms);
@@ -439,11 +439,11 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 					{
 						if (time_format == MCI_FORMAT_MILLISECONDS)
 						{
-							parms->dwReturn = 120000; /*fake 2 min in ms*/
+							parms->dwReturn = 60000; /*fake 2 min in ms*/
 						}
 						else
 						{
-							parms->dwReturn = 2; /* Fake track length (2min)*/
+							parms->dwReturn = 1; /* Fake track length (2min)*/
 						}
 					}
 					/* Get full length */
@@ -451,11 +451,11 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 					{
 						if (time_format == MCI_FORMAT_MILLISECONDS)
 						{
-							parms->dwReturn = 120000 * numTracks;
+							parms->dwReturn = 60000 * numTracks;
 						}
 						else
 						{
-							parms->dwReturn = 2 * numTracks;
+							parms->dwReturn = numTracks;
 						}
 					}
 				}
@@ -487,7 +487,7 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 					{
 						if (time_format == MCI_FORMAT_MILLISECONDS)
 							/* FIXME: implying milliseconds */
-							parms->dwReturn = parms->dwTrack * 120000;
+							parms->dwReturn = parms->dwTrack * 60000;
 						else /* TMSF */
 							parms->dwReturn = MCI_MAKE_TMSF(parms->dwTrack, 0, 0, 0);
 					}
