@@ -11,6 +11,7 @@ The trick is to handle the broken MCI mode change by monitoring POSTION and MODE
 - MciSendString improvements copied from ogg-winmm.
 - AuxVolume control enabled. (should use in-game volume sliders. Manual volume override available for problematic cases)
 - SetCurrentDirectory fix for cdaudioplr.exe when started from winmm.dll.
+
 Limitations:
 - Plays only single tracks which is fine most of the time but causes problems if the game issues a single "from -> to" command to play multiple tracks.
 - All tracks are reported as 2 minutes long. This may cause issues if a game relies on an accurate response for the track length query in order to determine when the track has finished playing.
