@@ -439,11 +439,11 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 					{
 						if (time_format == MCI_FORMAT_MILLISECONDS)
 						{
-							parms->dwReturn = 60000; /*fake 2 min in ms*/
+							parms->dwReturn = 60000; /*fake 1 min in ms*/
 						}
 						else
 						{
-							parms->dwReturn = 1; /* Fake track length (2min)*/
+							parms->dwReturn = 1; /* Fake track length (1min)*/
 						}
 					}
 					/* Get full length */
