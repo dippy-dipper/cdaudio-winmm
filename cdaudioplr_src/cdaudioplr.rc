@@ -1,8 +1,10 @@
-id ICON "icon.ico"
+#include "resource.h"
+
+IDI_MYICON ICON DISCARDABLE "icon.ico"
 
 1 VERSIONINFO
-FILEVERSION 0,3,0,0
-PRODUCTVERSION 0,3,0,0
+FILEVERSION 0,4,0,0
+PRODUCTVERSION 0,4,0,0
 {
     BLOCK "StringFileInfo"
     {
