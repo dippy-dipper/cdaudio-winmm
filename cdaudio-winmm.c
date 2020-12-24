@@ -123,13 +123,18 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		}
 #endif
 
-		/*system("taskkill /F /IM cdaudioplr.exe");*/
 		/* Write exit message for cdaudioplr.exe: */
-		/*
-		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		WriteFile(Mailslot, "1 exit", 64, &BytesWritten, NULL);
-		CloseHandle(Mailslot);
-		*/
+		static int bAutoClose = 0xFF;
+		if(bAutoClose == 0xFF){
+			bAutoClose = GetPrivateProfileInt("winmm", "AutoClose", 0, ".\\winmm.ini");
+		}
+		if(bAutoClose)
+		{
+			/*system("taskkill /F /IM cdaudioplr.exe");*/
+			HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+			WriteFile(Mailslot, "1 exit", 64, &BytesWritten, NULL);
+			CloseHandle(Mailslot);
+		}
 	}
 
 	return TRUE;
