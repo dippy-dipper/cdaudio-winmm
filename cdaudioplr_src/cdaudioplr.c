@@ -166,6 +166,7 @@ int reader_main( void )
 
 				/* Read exit message */
 				if(strcmp(name,"exit")==0){
+					PostMessage(g_hMainWindow,WM_SHOWWINDOW,SW_RESTORE,0);
 					quit = 1;
 				}
 		}
