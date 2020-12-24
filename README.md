@@ -1,31 +1,23 @@
 # cdaudio-winmm player (beta v.0.3):
 
-![screenshot](screenshot.png)
+![screenshot](screenshot-v04.png)
+
+0.4 changes:
+- MciSendCommand improvements from ogg-winmm project. Support for more games.
+- MciSendString improvements copied from ogg-winmm.
+- AuxVolume control enabled. (should use in-game volume sliders. Manual volume override available for problematic cases)
+- SetCurrentDirectory fix for cdaudioplr.exe when started from winmm.dll.
+Limitations:
+- Plays only single tracks which is fine most of the time but causes problems if the game issues a single "from -> to" command to play multiple tracks.
+- All tracks are reported as 2 minutes long. This may cause issues if a game relies on an accurate response for the track length query in order to determine when the track has finished playing.
 
 0.3 changes:
 - mp3/wav support
 - cleared up some naming inconsistency
 
-This is a very preliminary version of a winmm wrapper to separate cdaudio player that handles the track repeat and volume control that is broken on Windows Vista and onwards.
+This is a winmm wrapper to a separate cdaudio player that handles the track repeat that is broken from Windows Vista onwards. Unlike the ogg-winmm wrapper which plays ripped .ogg files cdaudio-winmm instead tries to play the cdtracks on a physical disc (or cdimage) using a separate player program.
 
-Unlike the ogg-winmm wrapper which plays ripped .ogg files it instead tries to play the cdtracks on a physical disc (or cd image?) using a separate player program. Communication between winmm.dll and the player is done using [mailslots.](https://docs.microsoft.com/en-us/windows/win32/ipc/mailslots)
-
-The trick is to handle the broken MCI mode change by monitoring POSTION and MODE. 
-If MODE = "playing" and POSITION has not changed then we can determine that the track has finished playing and can send the MM_NOTIFY_SUCCESSFUL message. The cdaudio player code might be useful for anyone wanting to write a MCI cdaudio player on newer Windows systems.
-
-Since the cdaudio player is a separate program it's volume can be adjusted from the Windows mixer or the GUI of the player. It also includes an .ini file for storing the music volume setting.
-
-Many MCI commands are still missing from the wrapper so games that use anything other than the default and most basic commands will not work. For example time format changes and track length calculations are missing.
-
-So far tested to work with the following games:
-- Civilization II: Test of Time
-- Incoming (Rage Software, 1998)
-- Pandemonium!
-- WinQuake demo
-
-Does not work with:
-- Battlezone 2
-- Heavy Gear
+The trick is to handle the broken MCI mode change by monitoring POSTION and MODE. If MODE = "playing" and POSITION has not changed then we can determine that the track has finished playing and can update the MODE and send the MM_NOTIFY_SUCCESSFUL message (if requested). The cdaudio player code might also be useful to anyone wanting to write an MCI cdaudio player on newer Windows systems.
 
 # Building:
 
