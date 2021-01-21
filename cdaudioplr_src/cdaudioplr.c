@@ -375,7 +375,7 @@ int player_main( void )
 				dprintf("%s\n", play_cmd);
 				
 				/* Issue play command: */
-				mciSendStringA("play mp3track notify", NULL, 0, g_hMainWindow);
+				mciSendStringA("play mp3track", NULL, 0, g_hMainWindow);
 				mp3done = 0;
 				dprintf("playing track: %d\n", play_from);
 				
@@ -387,6 +387,11 @@ int player_main( void )
 
 		while (!mp3done){
 			Sleep (100);
+			
+			//Check mp3 playback mode to determine when playback has finished:
+			mciSendStringA("status mp3track mode", mode, 64, NULL);
+			if(strcmp(mode,"playing")!=0) mp3done = 1;
+			
 			/* Check if track has changed: */
 			if(play_from != play_from2){
 				notify_msg = 0; /* If playback is interrupted do not send notify success msg. */
@@ -614,13 +619,13 @@ int player_main( void )
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
-	{
+	{/*
 		case MM_MCINOTIFY:
 		{
-			/* if (msg==MM_MCINOTIFY && wParam==MCI_NOTIFY_SUCCESSFUL) */
+			if (msg==MM_MCINOTIFY && wParam==MCI_NOTIFY_SUCCESSFUL)
 			mp3done = 1;
 		}
-		break;
+		break;*/
 		case WM_CREATE:
 		{
 			HFONT hfDefault;
