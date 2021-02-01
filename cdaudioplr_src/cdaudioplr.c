@@ -365,7 +365,7 @@ int player_main( void )
 			{
 				/* Open .wav file */
 				if(lookforwav){
-				sprintf(play_cmd, "open \".\\music\\track%02d.wav\" type mpegvideo alias mp3track", play_from);
+				sprintf(play_cmd, "open \".\\music\\track%02d.wav\" type waveaudio alias mp3track", play_from);
 				}
 				/* Open .mp3 file */
 				else{
