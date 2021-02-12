@@ -494,7 +494,11 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 						if (time_format == MCI_FORMAT_MILLISECONDS)
 							parms->dwReturn = 2001; /* Default pos for ms*/
 						else /* TMSF */
-							parms->dwReturn = 1; /* Default position */
+						{
+							int tmp_num = atoi(dwFrom_str);
+							if(tmp_num <= 0) tmp_num = 1;
+							parms->dwReturn = tmp_num; /* Default position */
+						}
 					}
 				}
 
