@@ -6,6 +6,15 @@ The trick is to handle the broken MCI mode change by monitoring POSTION and MODE
 
 ![screenshot](screenshot-v04.png)
 
+Limitations:
+- Plays only single tracks which is fine most of the time but causes problems if the game issues a single "from -> to" command to play multiple tracks.
+- All tracks are reported as 1 minutes long. This may cause issues if a game relies on an accurate response for the track length query in order to determine when the track has finished playing.
+- The wrapper can not handle a situation where a game uses the MCI API to also play video files. In this case you will likely see a black screen or an error message.
+
+0.4.0.2 changes:
+- Using the waveaudio device for .wav file playback.
+- Fix MCI_STATUS_POSITION for current track in TMSF (MidtownMadness Open1560 compatibility)
+
 0.4.0.1 changes:
 - Fixed a dgVoodoo2 ddraw.dll wrapper incompatibility issue with track repeats.
 
@@ -15,11 +24,6 @@ The trick is to handle the broken MCI mode change by monitoring POSTION and MODE
 - MciSendString improvements copied from ogg-winmm.
 - AuxVolume control enabled. (should use in-game volume sliders. Manual volume override available for problematic cases)
 - SetCurrentDirectory fix for cdaudioplr.exe when started from winmm.dll.
-
-Limitations:
-- Plays only single tracks which is fine most of the time but causes problems if the game issues a single "from -> to" command to play multiple tracks.
-- All tracks are reported as 1 minutes long. This may cause issues if a game relies on an accurate response for the track length query in order to determine when the track has finished playing.
-- The wrapper can not handle a situation where a game uses the MCI API to also play video files. In this case you will likely see a black screen or an error message.
 
 0.3 changes:
 - mp3/wav support
