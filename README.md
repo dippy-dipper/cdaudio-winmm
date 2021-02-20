@@ -1,4 +1,4 @@
-# cdaudio-winmm player (beta v.0.4.0.1):
+# cdaudio-winmm player (beta v.0.4.0.2):
 
 This is a winmm wrapper to a separate cdaudio player that handles the track repeat that is broken from Windows Vista onwards. Unlike the ogg-winmm wrapper which plays ripped .ogg files cdaudio-winmm instead tries to play the cdtracks on a physical disc (or cdimage) using a separate player program. Communication between winmm.dll and the player is done using [mailslots.](https://docs.microsoft.com/en-us/windows/win32/ipc/mailslots)
 
