@@ -272,7 +272,7 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 				dprintf("    dwFrom: %d\r\n", parms->dwFrom);
 				
 				/* FIXME: rounding to nearest track */
-				if (time_format == MCI_FORMAT_TMSF)
+				if (time_format == MCI_FORMAT_TMSF || MCI_FORMAT_MSF)
 				{
 					/* Write MCI_FROM: */
 					HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -303,7 +303,7 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 			{
 				dprintf("    dwTo:   %d\r\n", parms->dwTo);
 				
-				if (time_format == MCI_FORMAT_TMSF)
+				if (time_format == MCI_FORMAT_TMSF || MCI_FORMAT_MSF)
 				{
 					/* Write MCI_TO: */
 					HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
