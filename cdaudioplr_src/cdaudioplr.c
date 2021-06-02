@@ -970,17 +970,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	/* When cdaudioplr.exe is autostarted by the wrapper it may inherit the CPU 
+	/* When cdaudioplr.exe is auto-started by the wrapper it may inherit the CPU 
 	affinity of the game program. A particularly problematic case is the original 
 	Midtown Madness game executable which runs in a high priority class and sets
-	the player to run on the fist CPU core. This results in the player hanging unless
-	the mouse cursor is moved around. */
+	the player to run on the first CPU core (single core affinity). This results 
+	in the player hanging unless the mouse cursor is moved around. */
 
 	/* Set cdaudioplr.exe to run in high priority */
 	/* SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS); */
 
-	/* Set affinity to all processor cores */
-	/* SetProcessAffinityMask(GetCurrentProcess(), -1); */
+	/* Set affinity to last CPU core */
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+	int lastcore = sysinfo.dwNumberOfProcessors;
+	SetProcessAffinityMask(GetCurrentProcess(), lastcore);
 
 	WNDCLASSEX wc;
 	HWND hwnd;
