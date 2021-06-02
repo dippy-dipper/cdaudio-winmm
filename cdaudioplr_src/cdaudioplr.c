@@ -164,6 +164,14 @@ int reader_main( void )
 					SetWindowText(hEdit, TEXT("Command: MCI_RESUME"));
 				}
 
+				/* Read mci_tracks */
+				if(strcmp(name,"mci_tracks")==0){
+					/* Write no. of tracks for winmm wrapper: */
+					HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+					WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
+					CloseHandle(Mailslot);
+				}
+
 				/* Read exit message */
 				if(strcmp(name,"exit")==0){
 					PostMessage(g_hMainWindow,WM_SHOWWINDOW,SW_RESTORE,0);
@@ -296,10 +304,6 @@ int player_main( void )
 
 		/* convert to string */
 		sprintf(tracks_s, "%d", tracks);
-		/* Write no. of tracks for winmm wrapper: */
-		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
-		CloseHandle(Mailslot);
 		}
 
 		/* Look for .wav instead */
@@ -329,10 +333,6 @@ int player_main( void )
 			
 			/* convert to string */
 			sprintf(tracks_s, "%d", tracks);
-			/* Write no. of tracks for winmm wrapper: */
-			HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-			WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
-			CloseHandle(Mailslot);
 			}
 		}
 	}
@@ -458,11 +458,6 @@ int player_main( void )
 	/* convert to int: */
 	sscanf(tracks_s, "%d", &tracks); /* tracks = atoi(tracks_s); */
 	dprintf("Tracks: %d\n", tracks);
-
-	/* Write no. of tracks for winmm wrapper: */
-	HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	WriteFile(Mailslot, strcat(tracks_s, " tracks"), 64, &BytesWritten, NULL);
-	CloseHandle(Mailslot);
 
 	/* Open cdaudio & set time format: */
 	mciSendStringA("close cdaudio", NULL, 0, NULL); /* Important! */
