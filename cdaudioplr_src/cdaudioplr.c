@@ -388,7 +388,7 @@ int player_main( void )
 		while (!mp3done){
 			Sleep (100);
 			
-			//Check mp3 playback mode to determine when playback has finished:
+			/* Check mp3 playback mode to determine when playback has finished: */
 			mciSendStringA("status mp3track mode", mode, 64, NULL);
 			if(strcmp(mode,"playing")!=0) mp3done = 1;
 			
