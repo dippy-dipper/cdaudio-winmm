@@ -70,7 +70,6 @@ int reader_main( void )
 	}
 
 	/* Start cdaudio player: */
-	//Sleep(10);
 	ShellExecuteA(NULL, "open", ".\\mcicda\\cdaudioplr.exe", NULL, NULL, SW_SHOWNOACTIVATE);
 
 	/* Loop to read mailslot: */
@@ -141,7 +140,11 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR fdwCommand, DWORD_PTR dwParam)
 {
 	if(once){
-		Sleep(100); /* Sleep a bit to ensure cdaudioplr.exe is initialized. */
+		Sleep(300); /* Sleep a bit to ensure cdaudioplr.exe is initialized. */
+		/* Ask for no. of tracks: */
+		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		WriteFile(Mailslot, "1 mci_tracks", 64, &BytesWritten, NULL);
+		CloseHandle(Mailslot);
 		once = 0;
 	}
 	char cmdbuf[1024];
@@ -776,7 +779,11 @@ MMRESULT WINAPI fake_auxGetVolume(UINT uDeviceID, LPDWORD lpdwVolume)
 MMRESULT WINAPI fake_auxSetVolume(UINT uDeviceID, DWORD dwVolume)
 {
 	if(once){
-		Sleep(100); /* Sleep a bit to ensure cdaudioplr.exe is initialized. */
+		Sleep(300); /* Sleep a bit to ensure cdaudioplr.exe is initialized. */
+		/* Ask for no. of tracks: */
+		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		WriteFile(Mailslot, "1 mci_tracks", 64, &BytesWritten, NULL);
+		CloseHandle(Mailslot);
 		once = 0;
 	}
 	static DWORD oldVolume = -1;
