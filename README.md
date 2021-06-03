@@ -1,4 +1,4 @@
-# cdaudio-winmm player (beta v.0.4.0.2):
+# cdaudio-winmm player (beta v.0.4.0.3):
 
 This is a winmm wrapper to a separate cdaudio player that handles the track repeat that is broken from Windows Vista onwards. Unlike the ogg-winmm wrapper which plays ripped .ogg files cdaudio-winmm instead tries to play the cdtracks on a physical disc (or cdimage) using a separate player program. Communication between winmm.dll and the player is done using [mailslots.](https://docs.microsoft.com/en-us/windows/win32/ipc/mailslots)
 
@@ -10,6 +10,13 @@ Limitations:
 - Plays only single tracks which is fine most of the time but causes problems if the game issues a single "from -> to" command to play multiple tracks.
 - All tracks are reported as 1 minutes long. This may cause issues if a game relies on an accurate response for the track length query in order to determine when the track has finished playing.
 - The wrapper can not handle a situation where a game uses the MCI API to also play video files. In this case you will likely see a black screen or an error message.
+
+0.4.0.3 changes:
+- Better no. of tracks logic. Should now work more reliably.
+- Set player to always run on the last CPU core to fix issues with games set to run on single core affinity (e.g. Midtown Madness).
+- Handle TMS time format (Driver).
+
+Note: This may be the last maintenance release. Implementing support for games that switch between different time formats and use milliseconds to play a tracks from arbitrary position will require a full re-write of the logic. In addition a better wrapper is needed to only catch commands send to the cdaudio device and not swallow other commands that are meant for video playback for example. The latency with Mailslot communication is also proving difficult to manage as the logic becomes more complex.
 
 0.4.0.2 changes:
 - Using the waveaudio device for .wav file playback.
