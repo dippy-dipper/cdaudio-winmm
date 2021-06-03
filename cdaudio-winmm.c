@@ -145,6 +145,7 @@ MCIERROR WINAPI fake_mciSendCommandA(MCIDEVICEID IDDevice, UINT uMsg, DWORD_PTR 
 		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		WriteFile(Mailslot, "1 mci_tracks", 64, &BytesWritten, NULL);
 		CloseHandle(Mailslot);
+		Sleep(20); /* To ensure we get the no. of tracks */
 		once = 0;
 	}
 	char cmdbuf[1024];
@@ -784,6 +785,7 @@ MMRESULT WINAPI fake_auxSetVolume(UINT uDeviceID, DWORD dwVolume)
 		HANDLE Mailslot = CreateFile(ServerName, GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		WriteFile(Mailslot, "1 mci_tracks", 64, &BytesWritten, NULL);
 		CloseHandle(Mailslot);
+		Sleep(20); /* To ensure we get the no. of tracks */
 		once = 0;
 	}
 	static DWORD oldVolume = -1;
